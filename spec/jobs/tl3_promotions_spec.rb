@@ -33,9 +33,10 @@ describe Jobs::Tl3Promotions do
 
     it "demotes if was promoted more than X days ago" do
       user = nil
-      Timecop.freeze(4.days.ago) do
-        user = create_leader_user
-      end
+
+      freeze_time 4.days.ago
+      user = create_leader_user
+      unfreeze_time
 
       TrustLevel3Requirements.any_instance.stubs(:requirements_met?).returns(false)
       TrustLevel3Requirements.any_instance.stubs(:requirements_lost?).returns(true)
@@ -45,9 +46,9 @@ describe Jobs::Tl3Promotions do
 
     it "doesn't demote if user was promoted recently" do
       user = nil
-      Timecop.freeze(1.day.ago) do
-        user = create_leader_user
-      end
+      freeze_time 1.day.ago
+      user = create_leader_user
+      unfreeze_time
 
       TrustLevel3Requirements.any_instance.stubs(:requirements_met?).returns(false)
       TrustLevel3Requirements.any_instance.stubs(:requirements_lost?).returns(true)
